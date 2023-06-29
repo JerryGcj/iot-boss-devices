@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: iot-boss-devices
+  boot:
+    admin:
+      client:
+        api-path: /instances
+        url: http://172.18.49.129:9090 #监控中心地址
+        instance:
+          prefer-ip: true #使用ip注册进来
+        username: admin
+        password: p@ssw0rd
+#debug: true
+mail-to: zhangyong@wxdata.cn,gaochengjian@wxdata.cn,yanwei@wxdata.cn,tonghuabeike@126.com
+management:
+  health:
+    mail:
+      enabled: false
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /actuator
+      exposure:
+        include: '*'

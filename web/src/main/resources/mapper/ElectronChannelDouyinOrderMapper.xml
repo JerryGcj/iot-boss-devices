@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangxin.iot.douyin.mapper.ElectronChannelDouyinOrderMapper">
+
+    <select id="getCancelMsg" parameterType="java.lang.String"
+            resultType="com.wangxin.iot.douyin.entity.ElectronChannelOrderRegular">
+        SELECT
+        a.id,a.out_trade_no,a.cancel_msg,a.order_status,b.shop_id as ourId
+        FROM
+        `electron_channel_order_regular` a
+        INNER JOIN electron_channel_douyin_order b ON a.id = b.id
+        and a.order_status not in ('1','2')
+        AND b.sync_code is null
+        and b.douyin_create_time>=  DATE_SUB(NOW(), INTERVAL 48 HOUR)
+        <if test="shopIds !=null and shopIds.size>0">
+            and b.shop_id in
+            <foreach item="item" index="index" collection="shopIds"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="getExpressInfo" parameterType="java.lang.String"
+            resultType="com.wangxin.iot.douyin.entity.ElectronChannelOrderRegular">
+        SELECT
+            a.*,b.shop_id as ourId
+        FROM
+            `electron_channel_order_regular` a
+                INNER JOIN electron_channel_douyin_order b ON a.id = b.id
+            where b.sync_code=0
+              AND b.sync_express IS NULL
+        and b.douyin_create_time>=  DATE_SUB(NOW(), INTERVAL 48 HOUR)
+        <if test="shopIds !=null and shopIds.size>0">
+            and b.shop_id in
+            <foreach item="item" index="index" collection="shopIds"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+</mapper>

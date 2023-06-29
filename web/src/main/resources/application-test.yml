@@ -1,0 +1,136 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /iot-boss-devices
+spring:
+  mail:
+    host: smtp.163.com #发送邮件服务器
+    username: wxkjyj@163.com #发送邮件的邮箱地址
+    password:  wxkj2019 #客户端授权码，不是邮箱密码，这个在邮箱设置里面自动生成的
+    from: wxkjyj@163.com # 发送邮件的地址，和上面username一致
+  aop:
+    proxy-target-class: true
+#  application:
+#    name: sms-backend
+    # rabbitmq  配置信息
+  rabbitmq:
+    host: 47.105.109.82
+    port: 5678
+    username: admin
+    password: admin_!@#$%^
+    virtual-host: my_vhost
+    listener:
+      simple:
+        default-requeue-rejected: false  # 重试次数超过设置之后是否丢弃（false不丢弃时需要写相应代码将该消息加入死信队列）
+        retry:
+          max-attempts: 2  #最大的重试机制 5次
+          enabled: true #是否开启消费者重试（为false时关闭消费者重试，这时消费端代码异常会一直重复收到消息）
+          initial-interval: 5000 #重试间隔时间（单位毫秒）
+          max-interval: 5000 #
+        acknowledge-mode: MANUAL  # 消息确认机制开启，手工确认
+  #注册中心 配置信息
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://rm-m5ei1n9h74q59j7iruo.mysql.rds.aliyuncs.com:3306/wxiot_douyin?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&serverTimezone=Asia/Shanghai&useSSL=false
+    name: qianxun
+    password: Qianxun@123+
+    driver-class-name: com.mysql.jdbc.Driver
+    # 连接池的配置信息
+    # 初始化大小，最小，最大
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    # 配置获取连接等待超时的时间
+    maxWait: 60000
+    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    # 打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: config,stat,wall
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000;config.decrpt=true;config.decrypt.key=your public key
+    douyin:
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.wangxin.iot.model
+  global-config:
+    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    id-type: 0
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 2
+    #驼峰下划线转换
+    db-column-underline: true
+    #刷新mapper 调试神器
+    refresh-mapper: true
+    #数据库大写下划线转换
+    #capital-mode: true
+    #序列接口实现类配置
+    #key-generator: com.baomidou.springboot.xxx
+    #逻辑删除配置
+    logic-delete-value: -1
+    logic-not-delete-value: 0
+    #自定义填充策略接口实现
+    #meta-object-handler: com.baomidou.springboot.xxx
+    #自定义SQL注入器
+    #sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+    configuration:
+      map-underscore-to-camel-case: true
+      cache-enabled: false
+      call-setters-on-nulls: true
+# 在logs目录下生成spring.log文件
+logging:
+  path: logs/
+  config: classpath:logback-spring.xml
+# redis 配置文件
+redis:
+  database: 0
+  config:
+    hostName: 47.105.109.82
+    port: 6379
+    timeout: 0
+    password: Qianxun@123456+
+  pool:
+    maxIdle: 300
+    minIdle: 0
+    maxActive: 1024
+    maxWait: 1000
+    maxTotal: 60000
+    maxWaitMillis: 30000
+    testOnBorrow: true
+
+soap-config:
+  username: songyongshuang9241
+  password: Songys9241@
+  namespaceUrl: http://api.jasperwireless.com/ws/schema
+  prefix: jws
+  licenseKey: b1b37bee-506f-4d5e-a99d-62f87c804dad
+  url: https://api.10646.cn/ws/service/terminal
+realname:
+  appId: gxdxyltest
+  appKey: dxyl#193
+  targetUrl: https://smztest.cuiot.cn
+xxl:
+  job:
+    accessToken:
+    admin:
+      addresses: http://39.105.97.169:8080/xxl-job-admin
+    executor:
+      address:
+      appname: iot-boss-meiheng-douyin
+      logpath: /data/applogs/xxl-job/jobhandler
+      ip:
+      port: 9991
+      logretentiondays: 30
+douyin:
+  appKey: 7204649240029562428
+  appSecret: 92073fc2-05b1-4bc5-a5a1-fe4663df13dd
+  jsthShopId: 37636259

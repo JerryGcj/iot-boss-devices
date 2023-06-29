@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.wangxin.iot</groupId>
+    <artifactId>iot-boss-devices</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>iot-boss-devices</name>
+    <description>物联网卡平台Boss服务</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.4.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <modules>
+        <module>common</module>
+        <module>dao</module>
+        <module>service</module>
+        <module>web</module>
+    </modules>
+
+    <properties>
+        <spring.boot.admin.client.version>2.0.4</spring.boot.admin.client.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <springboot.version>2.0.4.RELEASE</springboot.version>
+        <project.lombok>1.16.22</project.lombok>
+        <!--swagger版本号-->
+        <fastjson.version>1.2.49</fastjson.version>
+        <mysql-connector.version>5.1.46</mysql-connector.version>
+        <spring-tx.version>5.0.8.RELEASE</spring-tx.version>
+        <pagehelper.version>4.1.0</pagehelper.version>
+        <marketing.common.version>0.0.1-SNAPSHOT</marketing.common.version>
+        <druid.version>1.1.9</druid.version>
+        <redis.version>2.0.4.RELEASE</redis.version>
+        <jredis.version>2.9.0</jredis.version>
+        <jwt.version>0.9.1</jwt.version>
+        <fegin.version>2.0.1.RELEASE</fegin.version>
+        <third-party-verification.version>0.0.1-SNAPSHOT</third-party-verification.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
+        <guava.version>19.0</guava.version>
+        <org.apache.commons.commons-lang3>3.0</org.apache.commons.commons-lang3>
+        <com.baomidou>3.3.0</com.baomidou>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>${spring.boot.admin.client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${org.apache.commons.commons-lang3}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${com.baomidou}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.wss</groupId>
+                <artifactId>xws-security</artifactId>
+                <version>3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${springboot.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jdbc</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${project.lombok}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wangxin.iot</groupId>
+                <artifactId>dao</artifactId>
+                <version>${marketing.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wangxin.iot</groupId>
+                <artifactId>service</artifactId>
+                <version>${marketing.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wangxin.iot</groupId>
+                <artifactId>common</artifactId>
+                <version>${marketing.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>${pagehelper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring-tx.version}</version>
+            </dependency>
+            <!-- alibaba的druid数据库连接池 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-redis</artifactId>
+                <version>${redis.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jredis.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.github.penggle/com.wangxin.abstractCaptcha.kaptcha -->
+            <dependency>
+                <groupId>com.github.penggle</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>${kaptcha.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.json-lib</groupId>
+                <artifactId>json-lib</artifactId>
+                <version>2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.doudian.open</groupId>
+                <artifactId>doudian-api</artifactId>
+                <version>1.1.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

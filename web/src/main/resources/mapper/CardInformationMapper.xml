@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangxin.iot.mapper.CardInformationMapper">
+
+
+<select id="getAll" resultType="com.wangxin.iot.model.CardInformation">
+
+    select iccid from iot_card_information;
+</select>
+
+<select id="monitorCard"  parameterType="java.lang.Object" resultType="com.wangxin.iot.model.MobileRefCardMonitorModel">
+     SELECT
+        c.id as cid,
+        c.iccid,
+        card_state,
+        c.customer_id,
+        r.custom_package_use,
+        r.id,
+        r.origin_use,
+        r.usaged,
+        r.valid_start,
+        r.valid_end,
+        r.init_usaged,
+        r.active
+    FROM
+    iot_card_information c inner join (
+        SELECT
+                id,
+                card_iccid,
+                terminal_id,
+                 custom_package_use,
+                origin_use,
+                usaged,
+                valid_start,
+                init_usaged,
+                valid_end,
+                        active
+                FROM
+                `iot_ref_card_cost`
+                WHERE
+                NOW() BETWEEN valid_start
+                AND valid_end
+                 AND origin_use -  (usaged * custom_package_use + init_usaged )  <![CDATA[ <= ]]> origin_use/10
+         UNION
+                SELECT
+                        id,
+                        card_iccid,
+                        terminal_id,
+                         custom_package_use,
+                        origin_use,
+                        usaged,
+                        valid_start,
+                        init_usaged,
+                        valid_end,
+                        active
+                FROM
+                iot_ref_card_cost
+                WHERE cost_type = 0
+                and now() BETWEEN valid_start and valid_end
+                and TIMESTAMPDIFF( DAY, valid_end, now( ) ) BETWEEN 0 AND #{days}
+    ) r on c.iccid = r.card_iccid and c.card_state= #{simStatus}
+</select>
+</mapper>

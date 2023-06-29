@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangxin.iot.mapper.IotUnicomCardInfoMapper">
+
+    <select id="getUnicomCardByIccid" parameterType="java.lang.String"
+            resultType="com.wangxin.iot.domain.IotUnicomCardInfo">
+       SELECT
+            a.*
+        FROM
+            iot_unicom_card_info a
+            LEFT JOIN iot_unicom_ref_card_cost b ON a.iccid = b.iccid WHERE a.iccid = #{iccid}
+            AND b.active =#{active}
+    </select>
+    <select id="getSyncIccids" parameterType="java.lang.Integer"
+            resultType="java.lang.String">
+        SELECT
+            iccid
+
+        FROM
+          iot_unicom_ref_card_cost
+        WHERE
+          now() BETWEEN valid_start AND valid_end
+          AND DATE_ADD(IFNULL(push_daily_time,create_time), INTERVAL #{hour} HOUR ) <![CDATA[ <= ]]> NOW( )
+    </select>
+    <select id="getSyncRefModel" parameterType="java.lang.Integer"
+            resultType="com.wangxin.iot.domain.RefCardModel">
+        SELECT
+            a.id,
+            a.parent_id,
+            a.iccid,
+            a.cost_type,
+            a.valid_start,
+            a.valid_end,
+            b.operator_id
+        FROM
+            iot_unicom_ref_card_cost a inner join iot_unicom_card_info b on a.iccid=b.iccid
+        WHERE
+            now() BETWEEN valid_start AND valid_end AND active=1
+
+    </select>
+    <!--这个是联合卡表查询-->
+    <select id="getRefModel" parameterType="java.lang.Integer"
+            resultType="com.wangxin.iot.domain.RefCardModel">
+        SELECT
+            r.id,
+            parent_id,
+            r.iccid,
+            cost_type,
+            valid_start,
+            valid_end
+        FROM
+        iot_unicom_card_info i
+        LEFT JOIN iot_unicom_ref_card_cost r ON i.iccid = r.iccid
+        WHERE
+        sim_status = #{status}
+        AND DATE_ADD( data_usage_change_time, INTERVAL #{hour} HOUR ) <![CDATA[ <= ]]> NOW( )
+        AND r.active =#{active}
+    </select>
+
+    <select id="monitorCard"  parameterType="java.lang.Object" resultType="com.wangxin.iot.domain.RefCardMonitorModel">
+        SELECT
+            c.iccid,
+            sim_status,
+            custom_package_use,
+            r.id,
+            r.origin_use,
+            r.usaged,
+            r.valid_start,
+            r.valid_end,
+            r.init_usaged,
+            r.active
+            FROM
+            iot_unicom_card_info c inner join (
+            <!--
+                这一部分是卡的用量已经到达一定阈值的卡的套餐,总量-用量*比例系数 小于总量的10分之一
+            -->
+                    SELECT
+                        id,
+                        iccid,
+                        origin_use,
+                        usaged,
+                        valid_start,
+                        init_usaged,
+                        valid_end,
+                        active
+                    FROM
+                    `iot_unicom_ref_card_cost`
+                    WHERE
+                    NOW() BETWEEN valid_start
+                    AND valid_end
+                    AND origin_use -  (usaged * #{multiple} + init_usaged )  <![CDATA[ <= ]]> origin_use/10
+                 UNION
+                    <!--
+                        这一部分是卡套餐的结束时间距离当前时间差几天,只查基础包
+                    -->
+                    SELECT
+                        id,
+                        iccid,
+                        origin_use,
+                        usaged,
+                        valid_start,
+                        init_usaged,
+                        valid_end,
+                        active
+                    FROM
+                    iot_unicom_ref_card_cost
+                    WHERE cost_type = 0
+                    and now() BETWEEN valid_start and valid_end
+                    and TIMESTAMPDIFF( DAY, valid_end, now( ) ) BETWEEN 0 AND #{days}
+            ) r on c.iccid = r.iccid and c.sim_status= #{simStatus}
+    </select>
+
+    <select id="getIccidRealNameToQuery" parameterType="java.lang.String"
+            resultType="java.lang.String">
+        SELECT
+        DISTINCT c.iccid
+        FROM
+        iot_card_order o
+        INNER JOIN iot_unicom_card_info c ON o.iccid = c.iccid
+        AND c.real_name_status != 1 and o.pay_state=4
+        <if test='operatorIds!=null and operatorIds.size >0'>
+            AND c.operator_id IN
+            <foreach item="id" collection="operatorIds" separator="," open="(" close=")" index=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+</mapper>
